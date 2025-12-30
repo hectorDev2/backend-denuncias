@@ -82,15 +82,23 @@ export class DenunciasController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id/status')
-  updateStatus(
+  async updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStatusDto: UpdateStatusDto,
     @Request() req,
   ) {
-    if (req.user.role !== 'authority') {
-      throw new UnauthorizedException('Only authority can update status');
+    if (req.user.role !== 'authority' && req.user.role !== 'admin') {
+      throw new UnauthorizedException('Only authority or admin can update status');
     }
-    return this.denunciasService.updateStatus(id, updateStatusDto.status);
+    
+    try {
+      return await this.denunciasService.updateStatus(id, updateStatusDto.status);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Invalid status')) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
   }
 
   @UseGuards(JwtAuthGuard)

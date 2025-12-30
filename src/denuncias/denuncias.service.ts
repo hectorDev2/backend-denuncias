@@ -42,11 +42,41 @@ export class DenunciasService {
     });
   }
 
-  updateStatus(id: number, status: string) {
-    return this.prisma.complaint.update({
+  async updateStatus(id: number, status: string) {
+    const complaint = await this.prisma.complaint.findUnique({ where: { id } });
+    
+    if (!complaint) {
+       throw new Error('Complaint not found'); // Best to use NotFoundException but service layer throwing generic error is okay if controller handles it, but let's stick to simple logic here
+    }
+
+    const currentStatus = complaint.status;
+    
+    // Validate Flow
+    const isValid = 
+      (currentStatus === 'pending' && status === 'in_progress') ||
+      (currentStatus === 'in_progress' && status === 'resolved');
+      
+    if (!isValid) {
+      // Throwing error that controller can catch or filter
+       throw new Error(`Invalid status transition from ${currentStatus} to ${status}`);
+    }
+
+    // Update
+    const updatedComplaint = await this.prisma.complaint.update({
       where: { id },
       data: { status },
     });
+
+    // Notify
+    await this.prisma.notification.create({
+      data: {
+        type: 'status_change',
+        message: `El estado de tu denuncia "${complaint.title}" ha cambiado a "${status}".`,
+        userId: complaint.userId,
+      }
+    });
+
+    return updatedComplaint;
   }
 
   remove(id: number) {
