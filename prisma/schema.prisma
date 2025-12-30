@@ -12,9 +12,19 @@ model User {
   email     String   @unique
   name      String
   password  String
-  role      String   @default("citizen") // 'citizen' | 'authority'
+
+  role      String   @default("citizen")
+  // citizen | authority | admin
+
+  status    String   @default("active")
+  // active | blocked
+
   avatar    String?
-  complaints Complaint[]
+
+  complaints     Complaint[]
+  sentMessages   Message[]           @relation("SentMessages")
+  notifications  Notification[]
+  resetTokens    PasswordResetToken[]
 }
 
 model Complaint {
@@ -22,12 +32,50 @@ model Complaint {
   title       String
   description String
   category    String
-  status      String   @default("Pending") // Pending, In Progress, Resolved
+
+  status      String   @default("pending")
+  // pending | in_progress | resolved
+
   lat         Float?
   lng         Float?
-  address     String?  @map("address")
-  imageUrl    String?  @map("image_url")
-  createdAt   DateTime @default(now()) @map("created_at")
-  userId      Int      @map("user_id")
+  address     String?
+  imageUrl    String?
+
+  createdAt   DateTime @default(now())
+
+  userId      Int
   user        User     @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  senderId  Int
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+
+  receiverId Int
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  type      String
+  // status_change | message
+
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 }
