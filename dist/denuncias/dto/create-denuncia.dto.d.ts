@@ -4,4 +4,5 @@ export declare class CreateDenunciaDto {
     category: string;
     lat?: number;
     lng?: number;
+    address?: string;
 }

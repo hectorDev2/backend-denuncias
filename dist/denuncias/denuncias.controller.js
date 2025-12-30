@@ -48,6 +48,16 @@ let DenunciasController = class DenunciasController {
         }
         return this.denunciasService.updateStatus(id, updateStatusDto.status);
     }
+    async remove(id, req) {
+        const denuncia = await this.denunciasService.findOne(id);
+        if (!denuncia) {
+            throw new common_1.ForbiddenException('Complaint not found');
+        }
+        if (denuncia.userId !== req.user.userId && req.user.role !== 'authority') {
+            throw new common_1.ForbiddenException('You can only delete your own complaints');
+        }
+        return this.denunciasService.remove(id);
+    }
 };
 exports.DenunciasController = DenunciasController;
 __decorate([
@@ -110,6 +120,15 @@ __decorate([
     __metadata("design:paramtypes", [Number, update_status_dto_1.UpdateStatusDto, Object]),
     __metadata("design:returntype", void 0)
 ], DenunciasController.prototype, "updateStatus", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], DenunciasController.prototype, "remove", null);
 exports.DenunciasController = DenunciasController = __decorate([
     (0, common_1.Controller)('denuncias'),
     __metadata("design:paramtypes", [denuncias_service_1.DenunciasService])

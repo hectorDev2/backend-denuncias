@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_URL="http://localhost:3000"
+BASE_URL="http://localhost:3004"
 
 echo "1. Registering Citizen..."
 CITIZEN_EMAIL="citizen@test.com"

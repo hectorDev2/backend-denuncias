@@ -18,6 +18,7 @@ class CreateDenunciaDto {
     category;
     lat;
     lng;
+    address;
 }
 exports.CreateDenunciaDto = CreateDenunciaDto;
 __decorate([
@@ -47,4 +48,9 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateDenunciaDto.prototype, "lng", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateDenunciaDto.prototype, "address", void 0);
 //# sourceMappingURL=create-denuncia.dto.js.map

@@ -53,6 +53,11 @@ let DenunciasService = class DenunciasService {
             data: { status },
         });
     }
+    remove(id) {
+        return this.prisma.complaint.delete({
+            where: { id },
+        });
+    }
     async getStats() {
         const total = await this.prisma.complaint.count();
         const byStatus = await this.prisma.complaint.groupBy({

@@ -17,6 +17,7 @@ export declare class DenunciasController {
         status: string;
         lat: number | null;
         lng: number | null;
+        address: string | null;
         imageUrl: string | null;
         createdAt: Date;
         userId: number;
@@ -30,6 +31,7 @@ export declare class DenunciasController {
         status: string;
         lat: number | null;
         lng: number | null;
+        address: string | null;
         imageUrl: string | null;
         createdAt: Date;
         userId: number;
@@ -52,6 +54,7 @@ export declare class DenunciasController {
         status: string;
         lat: number | null;
         lng: number | null;
+        address: string | null;
         imageUrl: string | null;
         createdAt: Date;
         userId: number;
@@ -64,8 +67,22 @@ export declare class DenunciasController {
         status: string;
         lat: number | null;
         lng: number | null;
+        address: string | null;
         imageUrl: string | null;
         createdAt: Date;
         userId: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    remove(id: number, req: any): Promise<{
+        id: number;
+        title: string;
+        description: string;
+        category: string;
+        status: string;
+        lat: number | null;
+        lng: number | null;
+        address: string | null;
+        imageUrl: string | null;
+        createdAt: Date;
+        userId: number;
+    }>;
 }

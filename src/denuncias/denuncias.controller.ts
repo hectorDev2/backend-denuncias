@@ -13,6 +13,8 @@ import {
   UploadedFile,
   ParseIntPipe,
   UnauthorizedException,
+  Delete,
+  ForbiddenException,
 } from '@nestjs/common';
 import { DenunciasService } from './denuncias.service';
 import { CreateDenunciaDto } from './dto/create-denuncia.dto';
@@ -24,7 +26,7 @@ import { extname } from 'path';
 
 @Controller('denuncias')
 export class DenunciasController {
-  constructor(private readonly denunciasService: DenunciasService) {}
+  constructor(private readonly denunciasService: DenunciasService) { }
 
   @Get()
   findAll(
@@ -89,5 +91,21 @@ export class DenunciasController {
       throw new UnauthorizedException('Only authority can update status');
     }
     return this.denunciasService.updateStatus(id, updateStatusDto.status);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    const denuncia = await this.denunciasService.findOne(id);
+    if (!denuncia) {
+      throw new ForbiddenException('Complaint not found');
+    }
+
+    // Check if user is the owner or an authority (optional, but good practice)
+    if (denuncia.userId !== req.user.userId && req.user.role !== 'authority') {
+      throw new ForbiddenException('You can only delete your own complaints');
+    }
+
+    return this.denunciasService.remove(id);
   }
 }

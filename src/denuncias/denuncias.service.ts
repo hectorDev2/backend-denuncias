@@ -4,7 +4,7 @@ import { CreateDenunciaDto } from './dto/create-denuncia.dto';
 
 @Injectable()
 export class DenunciasService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   create(
     createDenunciaDto: CreateDenunciaDto,
@@ -46,6 +46,12 @@ export class DenunciasService {
     return this.prisma.complaint.update({
       where: { id },
       data: { status },
+    });
+  }
+
+  remove(id: number) {
+    return this.prisma.complaint.delete({
+      where: { id },
     });
   }
 

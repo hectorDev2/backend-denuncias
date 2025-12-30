@@ -23,4 +23,8 @@ export class CreateDenunciaDto {
   @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   lng?: number;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
 }
